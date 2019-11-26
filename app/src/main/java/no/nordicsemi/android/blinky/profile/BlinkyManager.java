@@ -189,5 +189,5 @@ public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
 		mRXCharacteristic.setValue("35".getBytes());
         bluetoothGatt.writeCharacteristic(mRXCharacteristic);
         Log.d("SendMessage","message");
-	}
+	} // send 35로 바꿈
 }
