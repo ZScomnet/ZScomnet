@@ -37,7 +37,7 @@ import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
 
 public class BlinkyViewModel extends AndroidViewModel implements BlinkyManagerCallbacks {
-	private final BlinkyManager mBlinkyManager;
+	public BlinkyManager mBlinkyManager;
 	private BluetoothDevice mDevice;
 
 	// Connection states Connecting, Connected, Disconnecting, Disconnected etc.
@@ -134,8 +134,9 @@ public class BlinkyViewModel extends AndroidViewModel implements BlinkyManagerCa
 		mBlinkyManager.send(isOn);
 //		mLEDState.setValue(isOn);
 	}
-	public void ClickButton(final boolean Click){
+	public String ClickButton(final boolean Click){
 		mBlinkyManager.send(Click);
+		return mBlinkyManager.getResultTx();
 	}
 
 	@Override

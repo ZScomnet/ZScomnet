@@ -42,16 +42,17 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import no.nordicsemi.android.blinky.adapter.DiscoveredBluetoothDevice;
 import no.nordicsemi.android.blinky.viewmodels.BlinkyViewModel;
+import no.nordicsemi.android.blinky.profile.BlinkyManager;
 
 @SuppressWarnings("ConstantConditions")
 public class BlinkyActivity extends AppCompatActivity {
 	public static final String EXTRA_DEVICE = "no.nordicsemi.android.blinky.EXTRA_DEVICE";
-
+	private BlinkyManager mManager;
 	private BlinkyViewModel mViewModel;
-
 	@BindView(R.id.led_switch) Switch mLed;
 	@BindView(R.id.send_button) Button mButton;
 	@BindView(R.id.button_state) TextView mButtonState;
+	@BindView(R.id.recv_data) TextView mRecv_data;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -91,9 +92,10 @@ public class BlinkyActivity extends AppCompatActivity {
 		mButton.setOnClickListener(new Button.OnClickListener(){
 			@Override
 			public void onClick(View view){
-				mViewModel.ClickButton(true);
+				String DATA = mViewModel.ClickButton(true);
 				progressContainer.setVisibility(View.GONE);
 				content.setVisibility(View.VISIBLE);
+				mRecv_data.setText(DATA);
 			}
 		});
 
