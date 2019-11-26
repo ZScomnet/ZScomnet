@@ -30,6 +30,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -49,6 +50,7 @@ public class BlinkyActivity extends AppCompatActivity {
 	private BlinkyViewModel mViewModel;
 
 	@BindView(R.id.led_switch) Switch mLed;
+	@BindView(R.id.send_button) Button mButton;
 	@BindView(R.id.button_state) TextView mButtonState;
 
 	@Override
@@ -85,6 +87,16 @@ public class BlinkyActivity extends AppCompatActivity {
 			progressContainer.setVisibility(View.GONE);
 			content.setVisibility(View.VISIBLE);
 		});
+
+		mButton.setOnClickListener(new Button.OnClickListener(){
+			@Override
+			public void onClick(View view){
+				mViewModel.ClickButton(true);
+				progressContainer.setVisibility(View.GONE);
+				content.setVisibility(View.VISIBLE);
+			}
+		});
+
 		mViewModel.getConnectionState().observe(this, text -> {
 			if (text != null) {
 				progressContainer.setVisibility(View.VISIBLE);

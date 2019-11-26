@@ -186,7 +186,7 @@ public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
 		if (mRXCharacteristic == null)
 			return;
 		// No need to change?
-		mRXCharacteristic.setValue("sex".getBytes());
+		mRXCharacteristic.setValue("35".getBytes());
         bluetoothGatt.writeCharacteristic(mRXCharacteristic);
         Log.d("SendMessage","message");
 	}
