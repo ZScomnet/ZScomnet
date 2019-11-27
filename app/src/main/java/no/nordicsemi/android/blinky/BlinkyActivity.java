@@ -52,7 +52,11 @@ public class BlinkyActivity extends AppCompatActivity {
 	@BindView(R.id.led_switch) Switch mLed;
 	@BindView(R.id.send_button) Button mButton;
 	@BindView(R.id.button_state) TextView mButtonState;
-	@BindView(R.id.recv_data) TextView mRecv_data;
+	@BindView(R.id.recv_data1) TextView mRecv_data1;
+	@BindView(R.id.recv_data2) TextView mRecv_data2;
+	@BindView(R.id.recv_data3) TextView mRecv_data3;
+
+
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -89,13 +93,16 @@ public class BlinkyActivity extends AppCompatActivity {
 			content.setVisibility(View.VISIBLE);
 		});
 
+
 		mButton.setOnClickListener(new Button.OnClickListener(){
 			@Override
 			public void onClick(View view){
 				String DATA = mViewModel.ClickButton(true);
 				progressContainer.setVisibility(View.GONE);
 				content.setVisibility(View.VISIBLE);
-				mRecv_data.setText(DATA);
+				mRecv_data1.setText(DATA.split("a")[0]);
+				mRecv_data2.setText(DATA.split("a")[1]);
+				mRecv_data3.setText(DATA.split("a")[2]);
 			}
 		});
 
