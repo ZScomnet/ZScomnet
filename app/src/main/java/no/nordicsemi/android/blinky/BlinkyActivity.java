@@ -22,12 +22,15 @@
 
 package no.nordicsemi.android.blinky;
 
+import androidx.annotation.BinderThread;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,26 +40,22 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import no.nordicsemi.android.blinky.adapter.DiscoveredBluetoothDevice;
 import no.nordicsemi.android.blinky.viewmodels.BlinkyViewModel;
-import no.nordicsemi.android.blinky.profile.BlinkyManager;
 
 @SuppressWarnings("ConstantConditions")
 public class BlinkyActivity extends AppCompatActivity {
 	public static final String EXTRA_DEVICE = "no.nordicsemi.android.blinky.EXTRA_DEVICE";
-	private BlinkyManager mManager;
 	private BlinkyViewModel mViewModel;
-	@BindView(R.id.led_switch) Switch mLed;
-	@BindView(R.id.send_button) Button mButton;
-	@BindView(R.id.button_state) TextView mButtonState;
 	@BindView(R.id.recv_data1) TextView mRecv_data1;
 	@BindView(R.id.recv_data2) TextView mRecv_data2;
 	@BindView(R.id.recv_data3) TextView mRecv_data3;
-
-
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -65,6 +64,7 @@ public class BlinkyActivity extends AppCompatActivity {
 		Log.d("CurrentActivity","BlinkyActivity");
 		ButterKnife.bind(this);
 
+		Timer Update_data = new Timer();
 		final Intent intent = getIntent();
 		final DiscoveredBluetoothDevice device = intent.getParcelableExtra(EXTRA_DEVICE);
 		final String deviceName = device.getName();
@@ -75,36 +75,41 @@ public class BlinkyActivity extends AppCompatActivity {
 		getSupportActionBar().setTitle(deviceName);
 		getSupportActionBar().setSubtitle(deviceAddress);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		final Handler handler = new Handler(){
+			public void handleMessage(Message msg){
+				String DATA = mViewModel.update_data(true);
+				if(DATA.length() > 6) {
+					mRecv_data1.setText(DATA.split("a")[0]);
+					mRecv_data2.setText(DATA.split("a")[1]);
+					mRecv_data3.setText(DATA.split("a")[2]);
+				}
+				mViewModel.reset();
+			}
+		};
+		TimerTask TT = new TimerTask() {
+			@Override
+			public void run() {
+				Message msg = handler.obtainMessage();
+				handler.sendMessage(msg);
+			}
+		};
 
 		// Configure the view model
 		mViewModel = ViewModelProviders.of(this).get(BlinkyViewModel.class);
 		mViewModel.connect(device);
 
 		// Set up views
-		final TextView ledState = findViewById(R.id.led_state);
 		final LinearLayout progressContainer = findViewById(R.id.progress_container);
 		final TextView connectionState = findViewById(R.id.connection_state);
 		final View content = findViewById(R.id.device_container);
 		final View notSupported = findViewById(R.id.not_supported);
 
-		mLed.setOnCheckedChangeListener((buttonView, isChecked) -> mViewModel.toggleLED(isChecked));
 		mViewModel.isDeviceReady().observe(this, deviceReady -> {
 			progressContainer.setVisibility(View.GONE);
 			content.setVisibility(View.VISIBLE);
 		});
 
-
-		mButton.setOnClickListener(new Button.OnClickListener(){
-			@Override
-			public void onClick(View view){
-				String DATA = mViewModel.ClickButton(true);
-				progressContainer.setVisibility(View.GONE);
-				content.setVisibility(View.VISIBLE);
-				mRecv_data1.setText(DATA.split("a")[0]);
-				mRecv_data2.setText(DATA.split("a")[1]);
-				mRecv_data3.setText(DATA.split("a")[2]);
-			}
-		});
+		Update_data.schedule(TT, 1000, 1000);
 
 		mViewModel.getConnectionState().observe(this, text -> {
 			if (text != null) {
@@ -113,16 +118,12 @@ public class BlinkyActivity extends AppCompatActivity {
 				connectionState.setText(text);
 			}
 		});
-		mViewModel.isConnected().observe(this, this::onConnectionStateChanged);
 		mViewModel.isSupported().observe(this, supported -> {
 			if (!supported) {
 				progressContainer.setVisibility(View.GONE);
 				notSupported.setVisibility(View.VISIBLE);
 			}
 		});
-		mViewModel.getButtonState().observe(this,
-				pressed -> mButtonState.setText(pressed ?
-						R.string.button_pressed : R.string.button_released));
 
 		mViewModel.getByteMutableLiveData().observe(this, observer ->{
 			if(observer != null){
@@ -136,11 +137,4 @@ public class BlinkyActivity extends AppCompatActivity {
 		mViewModel.reconnect();
 	}
 
-	private void onConnectionStateChanged(final boolean connected) {
-		mLed.setEnabled(connected);
-		if (!connected) {
-			mLed.setChecked(false);
-			mButtonState.setText(R.string.button_unknown);
-		}
-	}
 }

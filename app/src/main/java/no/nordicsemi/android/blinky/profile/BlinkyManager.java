@@ -90,6 +90,8 @@ public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
 		return resultTx;
 	}
 
+	public void reset_ResultTx() { resultTx = ""; }
+
 	private final BlinkyTXDataCallback mTXDataCallback = new BlinkyTXDataCallback() {
 
 		@Override
@@ -187,7 +189,7 @@ public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
 		if (mRXCharacteristic == null)
 			return;
 		// No need to change?
-		mRXCharacteristic.setValue("35".getBytes());
+		mRXCharacteristic.setValue("1".getBytes());
         bluetoothGatt.writeCharacteristic(mRXCharacteristic);
         Log.d("SendMessage","message");
 	} // send 35로 바꿈
