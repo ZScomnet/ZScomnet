@@ -129,12 +129,8 @@ public class BlinkyViewModel extends AndroidViewModel implements BlinkyManagerCa
 		mDevice = null;
 		mBlinkyManager.disconnect().enqueue();
 	}
-
-	public void toggleLED(final boolean isOn) {
-		mBlinkyManager.send(isOn);
-	}
-	public String update_data(final boolean Click){
-		mBlinkyManager.send(Click);
+	public String update_data(final boolean Click,String SETTING){
+		mBlinkyManager.send(Click,SETTING);
 		return mBlinkyManager.getResultTx();
 	}
 	public void reset(){ mBlinkyManager.reset_ResultTx(); }

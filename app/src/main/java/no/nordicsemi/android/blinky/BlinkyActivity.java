@@ -22,23 +22,29 @@
 
 package no.nordicsemi.android.blinky;
 
-import androidx.annotation.BinderThread;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.androdocs.httprequest.HttpRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -57,12 +63,46 @@ public class BlinkyActivity extends AppCompatActivity {
 	@BindView(R.id.recv_data2) TextView mRecv_data2;
 	@BindView(R.id.recv_data3) TextView mRecv_data3;
 
+	String CITY = "Cheongju,KR";
+	String API = "9f729412ebaecc538d11df13ee316e86";
+	String SETTING = "";
+
+	TextView mTemperature,mHumidity,mWeather_string,mLocation;
+	ImageView mWeather;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_blinky);
 		Log.d("CurrentActivity","BlinkyActivity");
 		ButterKnife.bind(this);
+
+		mTemperature = findViewById(R.id.Weather_temp);
+		mHumidity = findViewById(R.id.Weather_humid);
+		mWeather = findViewById(R.id.Weather_Image);
+		mWeather_string = findViewById(R.id.Weather_string);
+		mLocation = findViewById(R.id.Earth_Location);
+
+		View.OnClickListener Listener_User = new View.OnClickListener(){
+			@Override
+			public void onClick(View view){
+				SETTING = "1111";
+				Toast.makeText(BlinkyActivity.this,"Send User Setting Data",Toast.LENGTH_SHORT).show();
+			}
+		};
+		Button change_SETTING = (Button) findViewById(R.id.User_Setting);
+		change_SETTING.setOnClickListener(Listener_User);
+
+		View.OnClickListener Listener_Weather = new View.OnClickListener(){
+			@Override
+			public void onClick(View view){
+				SETTING = "";
+				Toast.makeText(BlinkyActivity.this,"Send Weather Setting Data",Toast.LENGTH_SHORT).show();
+			}
+		};
+		Button Weather_SETTING = (Button) findViewById(R.id.Weather_Setting);
+		Weather_SETTING.setOnClickListener(Listener_Weather);
+		new weatherTask().execute();
 
 		Timer Update_data = new Timer();
 		final Intent intent = getIntent();
@@ -77,13 +117,14 @@ public class BlinkyActivity extends AppCompatActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		final Handler handler = new Handler(){
 			public void handleMessage(Message msg){
-				String DATA = mViewModel.update_data(true);
+				String DATA = mViewModel.update_data(true,SETTING);
 				if(DATA.length() > 6) {
 					mRecv_data1.setText(DATA.split("a")[0]);
 					mRecv_data2.setText(DATA.split("a")[1]);
 					mRecv_data3.setText(DATA.split("a")[2]);
 				}
 				mViewModel.reset();
+				SETTING = "";
 			}
 		};
 		TimerTask TT = new TimerTask() {
@@ -135,6 +176,56 @@ public class BlinkyActivity extends AppCompatActivity {
 	@OnClick(R.id.action_clear_cache)
 	public void onTryAgainClicked() {
 		mViewModel.reconnect();
+	}
+
+	class weatherTask extends AsyncTask<String,Void,String> {
+		@Override
+		protected void onPreExecute(){
+			super.onPreExecute();
+
+		}
+		protected String doInBackground(String... args){
+			String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?q=" + CITY + "&units=metric&appid=" + API);
+			return response;
+		}
+		protected void onPostExecute(String result){
+			try{
+				JSONObject jsonObj = new JSONObject(result);
+				JSONObject main = jsonObj.getJSONObject("main");
+				JSONObject sys = jsonObj.getJSONObject("sys");
+				JSONObject wind = jsonObj.getJSONObject("wind");
+				JSONObject weather = jsonObj.getJSONArray("weather").getJSONObject(0);
+
+				Long updatedAt = jsonObj.getLong("dt");
+				String updatedAtText = "Updated at: " + new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(new Date(updatedAt * 1000));
+				String temp = main.getString("temp") + "°C";
+				String tempMin = "Min Temp: " + main.getString("temp_min") + "°C";
+				String tempMax = "Max Temp: " + main.getString("temp_max") + "°C";
+				String pressure = main.getString("pressure");
+				String humidity = main.getString("humidity");
+
+				Long sunrise = sys.getLong("sunrise");
+				Long sunset = sys.getLong("sunset");
+				String windSpeed = wind.getString("speed");
+				String weatherDescription = weather.getString("description");
+
+				String address = jsonObj.getString("name") + ", " + sys.getString("country");
+
+
+				/* Populating extracted data into our views */
+				mWeather_string.setText(weatherDescription.toUpperCase());
+				mTemperature.setText(temp);
+				mHumidity.setText(humidity);
+				mLocation.setText(CITY);
+
+				/* Views populated, Hiding the loader, Showing the main design */
+				findViewById(R.id.loader).setVisibility(View.GONE);
+
+			}catch (JSONException e) {
+				findViewById(R.id.loader).setVisibility(View.GONE);
+				findViewById(R.id.errorText).setVisibility(View.VISIBLE);
+			}
+		}
 	}
 
 }

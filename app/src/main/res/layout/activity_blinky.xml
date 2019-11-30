@@ -59,7 +59,129 @@
 
 			<androidx.cardview.widget.CardView
 				android:layout_width="match_parent"
-				android:layout_height="56dp" />
+				android:layout_height="match_parent"
+				android:background="@android:color/white">
+
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:id="@+id/cardView"
+					android:layout_width="match_parent"
+					android:layout_height="286dp"
+					android:background="@android:color/white">
+
+					<ImageView
+						android:id="@+id/Weather_Image"
+						android:layout_width="179dp"
+						android:layout_height="199dp"
+						android:layout_marginEnd="12dp"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toStartOf="@+id/Weather_string"
+						app:layout_constraintHorizontal_bias="1.0"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintVertical_bias="0.505"
+						app:srcCompat="@drawable/earth_logo"
+						tools:layout_conversion_absoluteHeight="205dp"
+						tools:layout_conversion_absoluteWidth="194dp" />
+
+					<TextView
+						android:id="@+id/Weather_temp"
+						android:layout_width="116dp"
+						android:layout_height="51dp"
+						android:text="---"
+						android:textAlignment="center"
+						android:textSize="30sp"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_bias="0.908"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintVertical_bias="0.565" />
+
+					<TextView
+						android:id="@+id/Weather_humid"
+						android:layout_width="53dp"
+						android:layout_height="52dp"
+						android:text="---"
+						android:textAlignment="center"
+						android:textSize="30sp"
+						app:layout_constraintBottom_toBottomOf="@+id/imageView7"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_bias="0.748"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@+id/imageView6"
+						app:layout_constraintVertical_bias="0.666" />
+
+					<TextView
+						android:id="@+id/textView4"
+						android:layout_width="26dp"
+						android:layout_height="52dp"
+						android:text="%"
+						android:textSize="30sp"
+						app:layout_constraintBottom_toBottomOf="@+id/Weather_humid"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_bias="0.0"
+						app:layout_constraintStart_toEndOf="@+id/Weather_humid"
+						app:layout_constraintTop_toTopOf="@+id/Weather_humid"
+						app:layout_constraintVertical_bias="0.0" />
+
+					<ImageView
+						android:id="@+id/imageView6"
+						android:layout_width="68dp"
+						android:layout_height="74dp"
+						app:layout_constraintBottom_toTopOf="@+id/imageView7"
+						app:layout_constraintEnd_toStartOf="@+id/Weather_temp"
+						app:layout_constraintHorizontal_bias="0.0"
+						app:layout_constraintStart_toEndOf="@+id/Weather_Image"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintVertical_bias="1.0"
+						app:srcCompat="@drawable/temperature_logo" />
+
+					<ImageView
+						android:id="@+id/imageView7"
+						android:layout_width="42dp"
+						android:layout_height="67dp"
+						android:layout_marginEnd="164dp"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_bias="0.985"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintVertical_bias="0.881"
+						app:srcCompat="@drawable/humidty_logo" />
+
+					<TextView
+						android:id="@+id/Weather_string"
+						android:layout_width="202dp"
+						android:layout_height="39dp"
+						android:layout_marginTop="32dp"
+						android:layout_marginEnd="8dp"
+						android:foregroundGravity="center"
+						android:gravity="center"
+						android:text="SCATTER_CLOUD"
+						android:textAlignment="center"
+						android:textSize="24sp"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintTop_toTopOf="@+id/Weather_Image" />
+
+					<TextView
+						android:id="@+id/Earth_Location"
+						android:layout_width="173dp"
+						android:layout_height="37dp"
+						android:foregroundGravity="center_vertical|center"
+						android:gravity="center"
+						android:lineSpacingExtra="18sp"
+						android:text="Location"
+						android:textSize="18sp"
+						app:layout_constraintBottom_toTopOf="@+id/Weather_string"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_bias="0.886"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="@+id/Weather_Image"
+						app:layout_constraintVertical_bias="0.0" />
+
+
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</androidx.cardview.widget.CardView>
 
 			<androidx.cardview.widget.CardView
 				android:id="@+id/led_card"
@@ -71,7 +193,7 @@
 
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
-					android:layout_height="241dp"
+					android:layout_height="178dp"
 					app:layout_constraintBottom_toBottomOf="@+id/humid_unit"
 					app:layout_constraintTop_toBottomOf="@+id/humid_unit">
 
@@ -141,7 +263,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginEnd="176dp"
-						android:layout_marginBottom="82dp"
+						android:layout_marginBottom="32dp"
 						android:text="Sunshine"
 						android:textSize="24sp"
 						app:layout_constraintBottom_toBottomOf="parent"
@@ -163,7 +285,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="12dp"
-						android:text="%"
+						android:text="lx"
 						android:textSize="24sp"
 						app:layout_constraintBottom_toBottomOf="@+id/recv_data3"
 						app:layout_constraintStart_toEndOf="@+id/recv_data3" />
@@ -200,12 +322,11 @@
 						android:layout_width="0dp"
 						android:layout_height="0dp"
 						android:layout_marginStart="9dp"
-						android:layout_marginBottom="50dp"
-						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintBottom_toBottomOf="@+id/sun_title"
 						app:layout_constraintEnd_toStartOf="@+id/sun_title"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintVertical_bias="0.0"
+						app:layout_constraintTop_toTopOf="@+id/temp_title"
+						app:layout_constraintVertical_bias="1.0"
 						app:srcCompat="@drawable/house_logo" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
@@ -220,16 +341,16 @@
 				<Button
 					android:id="@+id/User_Setting"
 					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
+					android:layout_height="75dp"
 					android:layout_weight="1"
 					android:text="USER SETTING" />
 
 				<Button
 					android:id="@+id/Weather_Setting"
 					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
+					android:layout_height="75dp"
 					android:layout_weight="1"
-					android:text="Weather_Setting" />
+					android:text="Weather Setting" />
 			</LinearLayout>
 
 
@@ -305,4 +426,19 @@
 			android:text="@string/not_supported_action" />
 
 	</LinearLayout>
+
+	<ProgressBar android:id="@+id/loader"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerInParent="true"
+		android:visibility="gone"/>
+
+	<TextView
+		android:id="@+id/errorText"
+		android:layout_width="134dp"
+		android:layout_height="112dp"
+		android:layout_centerInParent="true"
+		android:text="Something went wrong"
+		android:visibility="gone" />
+
 </RelativeLayout>

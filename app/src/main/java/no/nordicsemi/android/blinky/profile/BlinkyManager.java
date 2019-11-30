@@ -184,13 +184,17 @@ public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
 	 *
 	 * @param on true to turn the LED on, false to turn it off.
 	 */
-	public void send(final boolean on) {
+	public void send(final boolean on,String SETTING) {
 		// Are we connected?
 		if (mRXCharacteristic == null)
 			return;
 		// No need to change?
-		mRXCharacteristic.setValue("1".getBytes());
+		if (SETTING != "")
+			mRXCharacteristic.setValue("3333".getBytes());
+		else
+			mRXCharacteristic.setValue("1".getBytes());
         bluetoothGatt.writeCharacteristic(mRXCharacteristic);
         Log.d("SendMessage","message");
 	} // send 35로 바꿈
+
 }
